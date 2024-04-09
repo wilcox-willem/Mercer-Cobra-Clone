@@ -1,0 +1,35 @@
+
+The Dlist class uses templates to be more flexible in the types of data that it can be used with. Templates essentially act as generic data types that can be assigned more specifically later on. This way, Dlist can be used for multiple types of data without using other more costly means. 
+Furthermore, Dlist contains two private attributes:
+ 
+-	Int length (the number of items contained in the list)
+-	NodeType<ItemType>* head (contains address of head of list)
+
+The Dlist contains several public and private functions
++	void makeEmpty ()  :: empties the list of all items 
++	void deleteItem (ItemType item)  :: finds parameter in list, if found deletes it
++	bool inList (ItemType item) const :: if parameter is in list, return true
++	bool isEmpty () const ::  if list is empty, return true
++	void print() const :: prints the items from head to tail, one line at a time, with its rank in the list
++	void insertHead (ItemType item) :: inserts parameter as head
++	void appendTail (ItemType item)  :: inserts parameter as tail
++	int lengthIs() const  :: returns private int length
++	void getHead() const :: returns the head of the list
++	void getTail() const :: returns the tail of the list
+-	NodeType<ItemType>* location(ItemType item) const ::  if parameter is in list, returns its location
+-	NodeType<ItemType>* last() const  :: finds then returns the address of the tail of the list
+-	void deleteLocation (NodeType<ItemType>* delPtr) :: deletes the given location
+
+The Move to the Front Algorithm is a self-adjustment operation that moves the most recently accessed item to the front of the list. In practice, it puts more frequently accessed items to the front of the list, making them faster to access. 
+The main algorithm of the client program (MoveFront.cpp) is a switch case in a while loop that prints a menu listing the following options, using console to navigate the menu and answer prompts. The majority of the menu has built in checks for duplicates items or if the list is. Furthermore, each member of the menu gives feedback to the user in the console
+	H: Insert item at front || uses insertHead()
+	T: Insert item at back  || uses appendTail()
+	A: Access an item in list || uses Move to Front Algorithm
+	D: Delete an item in list || uses deleteItem()
+	P: Print the list || uses print()
+	F: Print front of the list || prints the head of the list
+	B: Print back of the list || prints the tail of the list
+	L: Print the list's length || uses Dlist::lengthIs()
+	R: Reverse the list || reverses the contents of the list
+	Q: Quit the program || exits the loop/program
+

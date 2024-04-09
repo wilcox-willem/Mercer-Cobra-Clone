@@ -1,0 +1,63 @@
+V "GNAT Lib v4.8"
+M P W=b
+P SS ZX
+
+RN
+RV NO_IO
+RV NO_STANDARD_STORAGE_POOLS
+RV SPARK
+
+U commandlineargs%b	CommandLineArgs.adb	0570df2a NE OO SU
+W ada%s			ada.ads			ada.ali
+W ada.command_line%s	a-comlin.adb		a-comlin.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W system.concat_4%s	s-conca4.adb		s-conca4.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+D ada.ads		20121213103024 3ffc8e18
+D a-comlin.ads		20121213103024 e0accaa5
+D a-except.ads		20121213103024 10fcae55
+D a-finali.ads		20121213103024 52ecdc1b
+D a-ioexce.ads		20121213103029 8b9de6cd
+D a-stream.ads		20121213103024 2ca4ee37
+D a-tags.ads		20121213103024 6c0509d0
+D a-textio.ads		20130106093217 386df5d4
+D a-unccon.ads		20121213103024 f9eb8f06
+D CommandLineArgs.adb	20231205000527 ddb1e05b
+D interfac.ads		20121213103024 129923ea
+D i-cstrea.ads		20130106093208 3286f6aa
+D system.ads		20121213103024 90249111
+D s-conca4.ads		20121213103024 025fe3be
+D s-crtl.ads		20130106093200 1ea48bce
+D s-exctab.ads		20121213103029 66e51330
+D s-ficobl.ads		20121213103029 55a71d43
+D s-finmas.ads		20121213103024 b95bb341
+D s-finroo.ads		20121213103024 4ff27390
+D s-imgint.ads		20121213103024 02dbe0c2
+D s-parame.ads		20121213103024 b6e20cc0
+D s-pooglo.ads		20121213103024 542f33d0
+D s-secsta.ads		20121213103024 eea35a36
+D s-soflin.ads		20121213103024 24c8153c
+D s-stache.ads		20121213103024 596fc1b4
+D s-stalib.ads		20130106093355 f78bcf95
+D s-stoele.ads		20121213103024 facd7d98
+D s-stoele.adb		20121213103024 afc5dc80
+D s-stopoo.ads		20121213103024 7b8fbeee
+D s-traent.ads		20121213103024 5221ee41
+D s-unstyp.ads		20121213103024 6ae15c76
+D s-wchcon.ads		20121213103024 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 10|3r6 4r6 9r7 10r7 13r7 15r21 16r10 16r71
+X 2 a-comlin.ads
+38K13*Command_Line 139e21 10|4w10 9r11 15r25 16r75
+41V13*Argument_Count{natural} 10|9s24 15s38
+48V13*Argument{string} 10|16s88
+X 8 a-textio.ads
+49K13*Text_IO 471e16 10|3w10 10r11 13r11 16r14
+263U14*Put_Line 10|10s19 13s19 16s22
+X 10 CommandLineArgs.adb
+6U11*CommandLineArgs 6b11 19l5 19t20
+15i11 I{integer} 16r59 16r97
+

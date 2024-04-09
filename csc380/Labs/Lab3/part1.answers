@@ -1,0 +1,20 @@
+WILLEM WILCOX, DR. DIGH, CSC380, MU
+
+(a)
+The board is implemented as a 2d character vector (Grid[rows][cols]), using "-" to denote an empty space.
+
+
+(b)
+The use of protected rather than private, allows the protected items more visibility than being private. This allows more members of the class structure access to the methods, providing more reusability.
+
+(c)
+Each "pass" of the recursive function starts from [0,0] then checks an entire column then moves row and repeats, until it finds an empty space. If it reaches [9,9] without finding an empty space, it completes (base case 1). Otherwise, it tries to solve and if it fully solves while trying values, it will also return true (base case 2).
+
+(d)
+I started a little bit in my answer for (c), but I am going to start over.
+Each "pass" of the recursive function starts by cycling (col 1->9, row 1->9) from the current [r,c] position. It searches for the first empty space, and returns true if none are found. If a blank space is found, it tries 1-9 in the blank space while checking if each value is a valid solution. If a valid solution is found, it returns true. If it fails, it will clear and reset the previous passes, then try again. The best way I can put it into words is as follows: It starts at a given position (assuming previous sections are correct) then checks for the next empty box, tries each solution 1-9 and fills with the first valid solution, then repeats until correct or if it determines an invalid solution, it resets to the last most correct position.
+
+I think that larger puzzles will grow significantly slower, since the number of cells it has to compare against will increase rapidly. I do think that the recursive nature of the solution allows it to be much faster than many other methods for solving, it acts like a self-bookmarking behavior within a brute force solver.
+
+(e)
+A relational network (RN: "a type of neural network that focuses on the relationship between pairs of objects") was used, so that each cell was a node capable of sending and receiving info. This allows the RN to make educated guesses via deduction. The article states that over 216,000 puzzles of varying difficulty were used to train the RN. That's about 215,990 more sudoku puzzles than I have done!

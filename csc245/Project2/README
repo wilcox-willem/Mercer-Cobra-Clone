@@ -1,0 +1,26 @@
+1. The client accomplishes the goal of implementing the Stack class to make a DC linux like clone. The client accepts a variety of user inputs to perform post-fix calculations.
+
+2. The input includes, digits 0-9, _ to signify a negative number
+
+    - p : prints the value at the top of the stack
+    - n : prints the value at the top of the stack and pops it
+    - f : prints the entire stack w/o modifying it
+    - c : clears the stack
+    - d : duplicates the value of the stack
+    - r : reverses the top two values of the stack
+    - +, -, *, /, % : perform arithmetic operations
+
+3. This program uses the Stack class, as well as an exception class for InvalidInput
+    -Stack contains various methods to pop, push, top, topAndPop, clear, check if full/empty
+    -InvalidInput contains statement to print if thrown
+    -dc.cpp itself contains various functions to parse and process user input to manipulate Stack
+    
+4. 
+ - 1. This program takes a user input, then searches for digits or _
+     a. if found then continues to look until something else is found
+     b. once something else is found, adds what digit string was found to the stack
+ - 2. While input is scanned, if an operator is found (mentioned in Q#2)
+     a. the operator is passed to operatorCheck to determine what action to take
+     a2. depending on operator passed, it performs the action. 
+     b. if anything prevents the operation, an error is thrown
+ - 3. one the user input is completely parsed and actions performed, it waits until the next input

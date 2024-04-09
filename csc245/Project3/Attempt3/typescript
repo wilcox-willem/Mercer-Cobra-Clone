@@ -1,0 +1,438 @@
+Script started on Tue 14 Nov 2023 12:30:26 AM EST
+]0;wilcox_we@cobra:~/Project3/Attempt3[?1034h[wilcox_we@cobra Attempt3]$ cat -n zip.cpp
+     1	#include <cctype>
+     2	#include <stdio.h>
+     3	#include <fstream>
+     4	#include <string>
+     5	#include <iostream>
+     6	#include <cstdlib>
+     7	#include "huffman.h"
+     8	
+     9	using namespace std;
+    10	
+    11	void Weight(ifstream& infile, int Letters[], int argc, char *argv[], int source, string& s);
+    12	void InsertChars(const int Letters[], HuffmanTree& t, int header);
+    13	void Zip(ifstream& infile, int argc, char *argv[], int Letters[256], HuffmanTree& t, int source, string& s, int header);
+    14	
+    15	int main(int argc, char *argv[]) {
+    16	        string s;
+    17	        int source = 0;
+    18	        int header = 0;
+    19	        int Letters[256];
+    20	        string i;
+    21	
+    22		// check if a file was recived
+    23	        if(argc > 1)
+    24	                i = argv[1];
+    25	        
+    26	        HuffmanTree t;
+    27	        ifstream infile;
+    28	
+    29		// if no file recived throw error and exit program, else if check for 
+    30		// additional command line arguments, else build tree and compress file
+    31	        if(argc <= 1) {
+    32	                cout << "Error!! No File Entered." << endl;
+    33	                exit(1);
+    34	        }
+    35	        else if(i.compare("--help") == 0) {
+    36	                infile.open("help");
+    37	                string in;
+    38	                
+    39			// while file has input
+    40			while(!infile.eof()) {
+    41	                        getline(infile, in);
+    42	                        cout << in << endl;
+    43	                }
+    44	
+    45	                exit(1);
+    46	        }
+    47	        else {
+    48	                Weight(infile, Letters, argc, argv, source, s);
+    49	                InsertChars(Letters, t, header);
+    50	                t.build();
+    51	                Zip(infile, argc, argv, Letters, t, source, s, header);
+    52	        }
+    53	
+    54	        return 0;
+    55	}
+    56	
+    57	// function Weight, calculates the weight and counts the occurence of 
+    58	// different chars in a file so it determines the weight of a char
+    59	void Weight (ifstream& infile, int Letters[], int argc, char* argv[], int source, string& s) {
+    60	        string name;
+    61	        char ch;
+    62	        
+    63	        if(argc > 2)
+    64	                name = argv[2];
+    65	        else
+    66	                name = argv[1];
+    67	        
+    68	        infile.open(name.c_str());
+    69	        
+    70	        for (char ch = char(0);  ch <= char(126);  ch++)
+    71	                Letters[ch] = 0;
+    72	
+    73	        infile.get(ch);
+    74	        
+    75	        while (infile) {
+    76	                Letters[ch]++;
+    77	                s += ch;
+    78	                infile.get(ch);
+    79	        }
+    80	        
+    81	        infile.close();
+    82	}
+    83	
+    84	// function InsertChars, inserts the chars into huffman tree along with their
+    85	// respective weights
+    86	void InsertChars(const int Letters[], HuffmanTree& t, int header) {
+    87	        for (char ch = char(0);  ch <= char(126);  ch++)         {
+    88	                if ((Letters[ch] != 0) && (ch != '\n') && (ch != ' ')) {
+    89	                        t.insert(ch, Letters[ch]);
+    90	                        header++;
+    91	                }
+    92	                else if ((Letters[ch] != 0) && (ch == '\n')) {
+    93	                        t.insert('^', Letters[ch]);
+    94	                        header++;
+    95	                }
+    96	                else if ((Letters[ch] != 0) && (ch == ' ')) {
+    97	                        t.insert('$', Letters[ch]);
+    98	                        header++;
+    99	                }
+   100	        }
+   101	}
+   102	
+   103	// function Zip, main compressions algorithm for the zip 
+   104	void Zip(ifstream& infile, int argc, char *argv[], int Letters[256], HuffmanTree& t,
+   105		 int source, string& s, int header) {
+   106	        int zip = 0;
+   107	        float ratio;
+   108	        int i, j;
+   109	        string input = argv[1];
+   110	        string name;
+   111	
+   112		// checks for additional command line arguments, sets file name accordingly
+   113		if(argc > 2)
+   114	                name = argv[2];
+   115	        else
+   116	                name = argv[1];
+   117	        
+   118	        infile.open(name.c_str());
+   119	        
+   120		// if file entered does not exist exit program, else continue
+   121		if(infile.fail()) {
+   122	                cout << "ZIP: Invalid input\nTry 'ZIP --help' for more information.\n" << endl;
+   123	                exit(1);
+   124	        }
+   125	        else {
+   126	                header = t.numNodes() - (t.numNodes() / 2);
+   127	                
+   128	                // appends '.zip' to the file name
+   129	                name += ".zip";
+   130	                ofstream outfile;
+   131	                outfile.open(name.c_str());
+   132	                outfile << header << endl;
+   133	                
+   134		// for loop that compresses each char; multiple differnt cases handled
+   135		for (char ch = char(0);  ch <= char(126);  ch++)
+   136	        {
+   137	            	if ( (Letters[ch] != 0) && (ch != '\n') && (ch != ' ') )
+   138	                {
+   139	                 	outfile << (int)ch << " " << t.GetCode(ch) << endl;
+   140	                        source++;
+   141	                }
+   142	                else if ( (Letters[ch] != 0) && (ch == '\n') )
+   143	                {
+   144	                        outfile << (int)ch << " "<< t.GetCode(10) << endl;
+   145	                        source++;
+   146	                }
+   147	                else if ( (Letters[ch] != 0) && (ch == ' ') )
+   148	                {
+   149	                        outfile << (int)ch << " " << t.GetCode('$') << endl;
+   150	                        source++;
+   151	                }
+   152	        }
+   153	
+   154		// if --t is entered print huffman encoding table
+   155		if(input.compare("--t") == 0 && argc > 2) t.PrintTable();
+   156	                
+   157	                char currChar;
+   158	                
+   159	                for(int i = 0; i < s.length(); i++)
+   160	                {
+   161	                        currChar = s[i];
+   162	                        outfile << t.GetCode(currChar);
+   163	
+   164	                        int bitsUsed = 
+   165	                        zip++;
+   166	                }
+   167	                
+   168	                outfile << endl;
+   169	                outfile.close();
+   170	                ratio = (1 - (float)(zip / ((float)source * 8))) * 100;
+   171	                
+   172	                cout << "File Successfully zip to " << zip << " Bits (" << ratio << "% Less)" << endl;
+   173	        }
+   174	}]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ cat huffman.h
+#include <vector>
+#include <string>
+using namespace std;
+
+struct HNode {
+    char ch;
+    int weight;
+    int parent;
+    int childType;
+};
+
+class HuffmanTree {
+    public:
+	HuffmanTree();				// constructor
+
+	void insert(char ch, int weight);	// inserts a character and its associated weight
+						// into a node of the Huffman tree
+
+	bool inTree(char ch);			// returns a boolean value indicating whether
+						// a given character is stored in the tree
+		
+	int GetFrequency(char ch);		// returns the weight of a given character
+
+	
+	void build();				// Builds the Huffman Tree;
+	
+
+	string GetCode(char ch);		// returns the compressed code of a given
+						// character in the tree using recursion
+
+	void PrintTable();			// displays the Huffman encoding table used in
+						// the compression process
+	
+	int numNodes();				// returns the number of nodes currently in Huffman 
+						// tree
+	
+	char GetChar(int i);			// returns the char at a given index
+	
+	int GetNumChars();			// returns the current # of chars
+	
+	int compareWeight(int i);		// returns a different index with a smaller or 
+						//equal weight than given index
+
+
+    private:
+	vector<HNode> nodes;
+	int numChars;
+	bool built;                             
+	
+	int lookUp(char ch);			// returns the index of a given character in tree
+	int GetFrequency(int i);		// returns the weight at a given index
+	string GetCode(int i);			// returns the compressed code of the character at 
+						// a given index
+};
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ cat huffman.cpp
+#include "huffman.h"
+#include <iostream>
+using namespace std;
+
+HuffmanTree:: HuffmanTree()
+	: numChars(0), built(false) {}
+
+// inserts a character and its associated weight into a node of the Huffman tree
+void HuffmanTree:: insert(char ch, int weight) {
+    HNode newNode = {ch, weight, -1, -1}; 
+    built = false;
+    nodes.push_back(newNode);
+    numChars++;
+
+}
+
+// returns a boolean value indicating whether a given character is stored in the tree
+bool HuffmanTree:: inTree(char ch) {
+	return (lookUp(ch) != -1);
+}
+
+// returns the weight of a given character
+int HuffmanTree:: GetFrequency(char ch) {
+	return GetFrequency(lookUp(ch));
+}
+
+// returns the weight at a given index 
+int HuffmanTree:: GetFrequency(int i) {
+	return nodes[i].weight;
+}
+
+// returns the index of a given character in tree
+int HuffmanTree:: lookUp(char ch) {
+	int index = -1;
+	
+	for (int i = 0; i <= nodes.size(); i++)
+	{
+		if (nodes[i].ch == ch)
+			index = i;
+	}
+	return index;
+}
+
+// returns the compressed code of a given character in the tree using recursion
+string HuffmanTree:: GetCode(char ch) {
+	return GetCode(lookUp(ch));
+}
+
+// returns the compressed code of the character at a given index
+string HuffmanTree:: GetCode(int i) {
+	if (!built) {
+        build();
+    }
+
+    if (nodes[i].parent == 0) {
+        return "";
+    }
+    else {
+        return (GetCode(nodes[i].parent) +
+        (char)(nodes[i].childType+'0'));
+    }
+}
+
+// displays the Huffman encoding table used in the compression process
+void HuffmanTree:: PrintTable() {
+	cout << "\t\t++++  ENCODING TABLE  ++++\n";
+    printf("%-8s%-8s%-8s%-8s%-8s \n", "Index", "Char", "Weight", "Parent", "ChildType");	
+
+	for (int i = 0; i < numChars * 2 - 1; i++)
+	{
+		int TNodes = 0;
+		if ((nodes[i].ch != '\n') && (nodes[i].ch != ' ') && nodes[i].ch)
+		{
+			cout << "\t" << i << "\t" << nodes[i].ch << "\t";
+			cout << nodes[i].weight << "\t" << nodes[i].parent;
+			cout << "\t" << nodes[i].childType << "\n";
+		}
+		else if (nodes[i].ch == '\n')
+		{
+			cout << "\t" << i << "\tnl\t" << nodes[i].weight << "\t";
+			cout << nodes[i].parent << "\t" << nodes[i].childType << "\n";
+		}
+		else if (nodes[i].ch == ' ')
+		{
+			cout << "\t" << i << "\tsp\t" << nodes[i].weight << "\t";
+			cout << nodes[i].parent << "\t" << nodes[i].childType << "\n";
+		}
+		else if (i = (numChars * 2 - 2))
+		{
+			cout << "\t" << i << "\tT" << TNodes << "\t";
+			cout << nodes[i].weight << "\t" << nodes[i].parent << "\t";
+			cout << nodes[i].childType << "\n";
+			TNodes++;
+		}
+		else
+		{
+			cout << "\t" << i << "\tT" << TNodes << "\t";
+			cout << nodes[i].weight << "\t0\tN/A\n";
+		}
+	}
+}
+
+// returns the # of nodes currently in Huffman tree 
+int HuffmanTree:: numNodes() {
+	return nodes.size();
+}
+
+// builds the Huffman tree
+void HuffmanTree:: build() {
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		if (compareWeight(i) != -1 && ((nodes[i].parent == -1 ||
+		    nodes[compareWeight(i)].parent == -1)))
+		{
+			HNode newNode = {'\0', nodes[i].weight + 
+					 nodes[compareWeight(i)].weight, -1, -1};
+			nodes.push_back(newNode);
+			nodes[i].parent = nodes.size() - 1;
+			nodes[compareWeight(i)].parent =  nodes.size() - 1;
+			i++;
+			
+			if (compareWeight(i) != -1)
+			{
+				nodes[i].parent = nodes.size() - 1;
+				nodes[compareWeight(i)].parent = nodes.size() - 1;
+			}
+		}
+	}
+	
+	// assigns left and right child for whole tree
+	for (int i = 0; i <= nodes.size(); i++)
+	{
+		nodes[i].childType = 0;
+		i++;
+		nodes[i].childType = 1;
+	}
+	nodes[nodes.size() - 1].parent = 0;
+	nodes[nodes.size() - 1].childType = -1;
+}
+
+// returns lesser or equal index
+int HuffmanTree:: compareWeight(int i) {
+	int index = -1;  // base case
+
+	for (int j = 0; j <= nodes.size(); i++)
+		if ((nodes[j].weight <= nodes[i].weight) && j != i)
+			index = j;
+	return index;
+}
+
+// returns the char at a given index
+char HuffmanTree:: GetChar(int i) {
+	return nodes[i].ch;
+}
+
+// returns the # of chars currently in Huffman Tree
+int HuffmanTree:: GetNumChars() {
+	return numChars;
+}]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ c++ zip.cpp huffman
+[01m[Kzip.cpp:[m[K In function ‘[01m[Kvoid[01;32m[K Zip[m[K(std::ifstream&, int, char**, int*, HuffmanTree&, int, std::string&, int)[m[K’:
+[01m[Kzip.cpp:144:62:[m[K [01;31m[Kerror: [m[K‘[01m[Kstd::string HuffmanTree::[01;32m[KGetCode[m[K(int)[m[K’ is private within this context
+  144 |                         outfile << (int)ch << " "<< [01;31m[Kt.GetCode(10)[m[K << endl;
+      |                                                     [01;31m[K~~~~~~~~~^~~~[m[K
+In file included from [01m[Kzip.cpp:7[m[K:
+[01m[Khuffman.h:52:16:[m[K [01;36m[Knote: [m[Kdeclared private here
+   52 |         string [01;36m[KGetCode[m[K(int i);                  // returns the compressed code of the character at
+      |                [01;36m[K^~~~~~~[m[K
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ c++ zip.cpp huffman -o myZip
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ c++ unzip.cpp
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ mv a.out myUnzip
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ ls
+help  huffman  huffman.cpp  huffman.h  letters.cpp  [0m[01;32mmyUnzip[0m  [01;32mmyZip[0m  README  [01;31msample1.zip[0m  sample2  [01;31msample2.zip[0m  sample3  sample4  typescript  [01;32mUNZIP[0m  unzip.cpp  [01;32mZIP[0m  zip.cpp
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ myUnzip sample1
+Bad Filename Entered On Command Line -- Now Aborting
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  basic_string::substr: __pos (which is 18446744073709551615) > this->size() (which is 7)
+Aborted (core dumped)
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ myUnzip sample1.jpg
+Bad Filename Entered On Command Line -- Now Aborting
+File Successfully Inflated Back to Original.
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ myUnzip sample1.jpg[K[K[Kzip
+File Successfully Inflated Back to Original.
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ ls
+help  huffman  huffman.cpp  huffman.h  letters.cpp  [0m[01;32mmyUnzip[0m  [01;32mmyZip[0m  README  sample1  [01;31msample1.zip[0m  sample2  [01;31msample2.zip[0m  sample3  sample4  typescript  [01;32mUNZIP[0m  unzip.cpp  [01;32mZIP[0m  zip.cpp
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ lsmyUnzip sample1.zipjpg[K.jpgzipls[K[KmyZip sample3
+Segmentation fault (core dumped)
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ myZip sample3ls[KmyUnzip sample1.zip[K[K[K[K[K2.zip
+File Successfully Inflated Back to Original.
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ ls
+help  huffman  huffman.cpp  huffman.h  letters.cpp  [0m[01;32mmyUnzip[0m  [01;32mmyZip[0m  README  sample1  [01;31msample1.zip[0m  sample2  [01;31msample2.zip[0m  sample3  sample4  typescript  [01;32mUNZIP[0m  unzip.cpp  [01;32mZIP[0m  zip.cpp
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ cat sample2
+A As Is Tie Sit Sea Seat Eat It Ate Tea Taste
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ cat sample1
+aaaaaaaaaa eeeeeeeeeeeeeee iiiiiiiiiiii sss tttt         
+]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ cart[K[Kt sample1.zip
+7
+10 11010
+32 01
+97 111
+101 10
+105 00
+115 11011
+116 1100
+11111111111111111111111111111101101010101010101010101010101010010000000000000000000000000111011110111101101110011001100110001010101010101010111010]0;wilcox_we@cobra:~/Project3/Attempt3[wilcox_we@cobra Attempt3]$ exit
+exit
+
+Script done on Tue 14 Nov 2023 12:34:52 AM EST

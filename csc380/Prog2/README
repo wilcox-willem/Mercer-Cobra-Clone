@@ -1,0 +1,25 @@
+---------------------------------------------------------------
+Willem Wilcox, Dr. Digh, CSC 380, MU, 3/10/24
+
+The general outline of my algorithm will be:
+
+    For each location/cell do the following per turn/evolution
+
+    1. Determine number of neighbors (check within bounds)
+    2. If 0-1 neighbor(s), die (lonely)
+    3. If 2-3 neighbors, age 1 (or birth)
+    4. If 4+ neighbors, die (crowded)
+    5. Finally, if 10 years old, die
+
+    Do all of this on a copy of the board, then
+    update the current board with the copy 
+    (to keep evolution at the same time)
+
+To run:
+
+    Use the following command
+
+    python3 GoL_ww.py 
+
+
+---------------------------------------------------------------

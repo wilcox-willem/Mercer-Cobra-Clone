@@ -1,0 +1,77 @@
+// Willem Wilcox
+// 4/2/24
+// Dr. Digh, MU, CSC380
+// Project 3: The Chatbot
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////// This will be a broad summary of the changes and ideas I have implemented to the original Eliza concept //////
+
+For starters, I personally added more dialogue to the dialogue.txt file and tried to add more questions
+that would result in yes/no answers which then lead to user explanation, which then leads back to yes/no
+
+This in effect adds and expands upon the "keep the user distracted and focused on themself" to make
+the bot more convincing
+
+Furthermore, I added a feature so that responses take a random amount of time (1 sec to 5 sec)
+This makes responses from Eliza feel a little more variable and not always immediate. 
+[NOTE: this can be annoying for testing, so it can be disabled by using ANY extra command arg]
+
+Finally, I thought it would be nifty to add random facts to Eliza, because I'm known by family and friends
+to just randomly tell them bizzare, random, or useless facts. Plus I tend to just uncontrollably sprinkle them in, so it almost feels perfect
+
+I used a file someone previously made, and added more facts that I thought were cool. 
+
+(Credit to "https://github.com/anfederico/fact-bot/blob/master/Facts.txt" for original Facts.txt
+ Credit to chatGPT for providing "100 random computer science facts" as well)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////// This is a more in depth explanation of my algorithm for getting/editing responses //////
+
+First, the dialogue.txt file is parsed, and it stores each group of responses to a key of
+the different user inputs
+
+// For example, the dialogue may look like: // 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+once i | a couple times i       // these are the keys, seperated by "|",
+Would you do it again?          // each line below the keys before the "#"
+Did it end how you predicted?   // is considered a group of responses attatched to each key,
+#                               // finally, this tells that the responses are over and the next key is starting
+you are |you're |youre 
+Why do you think I am *?        // any line with an "*" cuts the user_input by the key found,
+Why do you say I am *?          // and inserts the latter portion of user_input inplace of the "*"
+#
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+// storage is dictionary style, so dialogue is stored similar to whats below
+
+{[once i ],{[Would you do it again?],[Did it end how you predicted?]}}
+{[couple times i ],{[Would you do it again?],[Did it end how you predicted?]}}
+{[you are ],{[Why do you think I am *?],[Why do you say I am *?]}}
+{[you're ],{[Why do you think I am *?],[Why do you say I am *?]}}
+{[youre ],{[Why do you think I am *?],[Why do you say I am *?]}}
+
+// Once it is all stored, it is sorted by key length longest to shortest. //
+// This way, whenever searching it is more likely to identify any complex keys first //
+
+// While Eliza is running, it will process and check user responses in the following manner:
+
+[Note, once Eliza finds a response it prints, then jumps back to listening.
+ This saves time by not having to do every step of the response check to print]
+
+First, clean input by removing stop words, and making all input lower case
+
+Second, check if user input directly matches any keys, if so randomly choose from key's response group, then print
+
+Third, if user input contains any keys, pull random response and check for "*" response handling, then print
+
+Finally, if no response found yet, pull response from '__NO_MATCH__' section of dialogue
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////// Random Fact implementation //////
+
+The random facts are stored in a Facts.txt file, where each line is a fact. To store them,
+each line is appended to a list, where access will almost always be in a random fashion
+
+Eliza has a "fact_timer" that starts 1-5 and each response loop, it lowers by 1.
+Once it is lower than 1, Eliza interrupts the conversation to tell a random fact,
+then the fact_timer is set back to 6-10. 

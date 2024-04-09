@@ -1,0 +1,139 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Willem Wilcox,
+ csc380, 
+ Dr. Digh, 
+ MU
+2/10/24
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I.
+Prolog is short for programming logic. 
+It is suited for programming relationships and facts. 
+For example, 
+    - father(john, mary). means john is the father of mary
+    - father(john, peter). means john is the father of peter
+    - sunny. means it is sunny
+    + therefore, when queried "sunny." it will respond "yes"
+    + furthermore, when queried "father(john, susan)." it will respond "no"
+
+
+
+II.
+1. | ?- parent(susan, mary).
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This asks if susan is a parent of mary,
+which is true
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+2. | ?- parent(ray, peter).
+
+no
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This asks if ray is a parent of peter,
+which is false
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+3. | ?- yeye(X, peter).
+
+X = david ?
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This asks who is the father of the father of peter,
+which is david
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+4. | ?- gunggung(X, Y).
+X = jack
+Y = peter ?
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This asks, who has a father (X) > mother > son (Y) relationship,
+which is jack (father of susan, mother of peter) and peter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+III.
+1. | ?- is_in_room(Class, wsc100).
+
+Class = csc480 ? 
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2. | ?- is_in_class(toby, Class).
+
+Class = csc380 ? 
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+3. | ?- is_hot(Person).
+Person = toby ? 
+
+yes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+is_hot(Person) uses variables, because is_hot is a status
+that will change per person and is therefore mutable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the "_" variable in the is_hot() causes it to
+falsely report. For example, with the changes it said
+bob was hot, when he is not. It appears as if it is
+finding the results for toby and not ensuring they are all
+bob's results.
+
+IV.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| ?- isbird(Bluebird).
+
+Bluebird = bird ? 
+
+yes
+| ?- isbird(bluebird).
+
+true ? 
+
+yes
+| ?- isbird(bird).    
+
+true ? 
+
+yes
+| ?- isbird(Bird).
+
+Bird = bird ? 
+
+yes
+| ?- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+V.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| ?- fact(6,X).
+
+X = 720 ? 
+~~~~~~~~~~~~
+| ?- sumsquares(6,X).
+
+X = 91 ? 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note:
+
+this lab was very insightful. I talked with a friend
+of mine who is a computer historian/enthusiast and it
+was one of the few programming languages he has used.
+He liked it more than his slight web-dev and assembly
+experiences. I enjoyed seeing how much it could do with
+so little. I think it would be cool to use it in tandem
+with another language to help ease any clunkyness.

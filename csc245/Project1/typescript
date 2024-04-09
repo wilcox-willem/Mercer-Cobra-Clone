@@ -1,0 +1,2628 @@
+Script started on Thu 21 Sep 2023 12:29:49 AM EDT
+]0;wilcox_we@cobra:~/Project1[?1034h[wilcox_we@cobra Project1]$ cat MoveFront.cpp
+//Willem Wilcox, CSC 245, Dr. Digh, Mercer University, 9/21/23
+#include <iostream>
+#include "dlist.h"
+using namespace std;
+
+  void PrintMenu(char &sel);
+  void HeadInsert(DList<int> &list);
+  void TailInsert(DList<int> &list);
+  void AccessItem(DList<int> &list);
+  void Delete(DList<int> &list);
+  void PrintList(const DList<int> &list);
+  void PrintLength(const DList<int> &list);
+  void FindandMove(DList<int> &list, int item);
+  //Extras
+  void ReverseList(DList<int> &list);
+  void FrontofList(const DList<int> &list);
+  void BackofList(const DList<int> &list);
+  void FindandMoveSilent(DList<int> &list, int item);
+  
+  
+int main() { 
+  DList<int> list;
+  char sel;
+  
+  
+  
+  do
+    {
+      PrintMenu (sel);
+      switch (toupper(sel))
+      {
+        case 'H' : HeadInsert(list); break;
+        case 'T' : TailInsert(list); break;
+        case 'A' : AccessItem(list); break;
+        case 'D' : Delete(list); break;
+        case 'P' : PrintList(list); break;
+        case 'F' : FrontofList(list); break;
+        case 'B' : BackofList(list); break;
+        case 'L' : PrintLength(list); break;
+        case 'R' : ReverseList(list); break;
+        case 'Q' : cout << "\tExiting Program...\n"; break;
+        default : cout << "\tError. Try Again." << endl;
+      }
+    } while (toupper(sel) != 'Q');
+  
+  return 0;
+}
+
+
+//PrintMenu - in the style of a lavish ascii house!
+void PrintMenu(char &sel) {  
+  //Pre Conditions: 
+  //Post Conditions: 
+  cout << endl;
+  cout << endl;
+  cout << endl;
+  cout << "       ; % " <<endl;
+  cout << "        # " << endl;
+  cout << "         {      " << endl;
+  cout << "        * $   <->" << endl;
+  cout << "       > &   <--->" << endl;
+  cout << "        _   <----->" << endl;
+  cout << "       | | <------->" << endl;
+  cout << "       | |<--------->" << endl;
+  cout << "       | |----------->" << endl;
+  cout << "       |_|------------>" << endl;
+  cout << "       <--------------->" << endl;
+  cout << "      <-----_______----->" << endl;
+  cout << "     <-----*  Hi!  *----->" << endl;
+  cout << "    <------*       *------>" << endl;
+  cout << "   <-------*(v._.^)*------->" << endl;
+  cout << "  <--------*_______*-------->" << endl;
+  cout << " <--------------------------->" << endl;
+  cout << "<----------------------------->" << endl;
+  cout << "|-----------------------------|" << endl;
+  cout << "|           ~Menu~            |" << endl;
+  cout << "| H: Insert item at front     |" << endl;
+  cout << "| T: Insert item at back      |" << endl;
+  cout << "| A: Access an item in list   |" << endl;
+  cout << "| D: Delete an item in list   |" << endl;
+  cout << "| P: Print the list           |" << endl;
+  cout << "| F: Print front of the list  |" << endl;
+  cout << "| B: Print back of the list   |" << endl;
+  cout << "| L: Print the list's length  |" << endl;
+  cout << "| R: Reverse the list         |" << endl;
+  cout << "| Q: Quit the program         |" << endl;
+  cout << "|                             |" << endl;
+  cout << "|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|" << endl;
+  cout << "|     back <- info -> next    |" << endl;
+  cout << "|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|" << endl;
+  cout << "|                             |" << endl;
+  cout << "|   The Doubly Linked House:  |" << endl;
+  cout << "|     Home of the (linear)    |" << endl;
+  cout << "|      Doubly Linked List     |" << endl;
+  cout << "|                             |   %--------% v..^      / " << endl;
+  cout << "|  Please enter your choice:  |   |Welcome!| /_/\\_____/" << endl;
+  cout << "|       (and have fun!)       |   %--------%    /\\   /\\" << endl;
+  cout << "|-----------------------------|___|________|__ /  \\ /  \\" << endl;
+  cout << endl;
+  
+  cin >> sel;
+
+}
+
+
+//H : HeadInsert //replaces head with console input
+void HeadInsert(DList<int> &list){
+  //Pre Conditions: 
+  //Post Conditions: integer from user input is added as the Head,
+  //                 unless already in the list. 
+  int input;
+  cout << "What number would you like to insert?" << endl;
+  cin >> input;
+  
+  if (!list.inList(input)){
+    list.insertHead(input);
+    cout << "Done!" << endl;
+  } 
+  else cout << "That item is already in the list." << endl;
+  
+}
+
+
+//T : TailInsert // appends item to tail of list
+void TailInsert(DList<int> &list){
+  //Pre Conditions: 
+  //Post Conditions: integer from user input is added as the Tail,
+  //                 unless already in the list. 
+  int input;
+  cout << "What number would you like to insert?" << endl;
+  cin >> input;
+  
+  if (!list.inList(input)){
+     list.appendTail(input);
+     cout << "Done!" << endl;
+  } 
+  else cout << "That item is already in the list." << endl;
+
+}
+
+
+//A : AccessItem //Accesses item based on console inout, then moves item to front via FindandMovd
+void AccessItem(DList<int> &list){
+  //Pre Conditions: 
+  //Post Conditions: integer from user input is searched for, if found moved to front of list
+  //                 unless already in the list. 
+  if (list.lengthIs() > 0){ 
+    int input;
+    cout << "What number would you like to access?" << endl;
+    cin >> input;
+  
+    if (list.inList(input)){
+      FindandMove(list, input);
+    } 
+    else cout << "That item is not in the list." << endl;
+    
+  } 
+  else cout << "The list is empty." << endl;
+  
+}
+
+//FindandMove //AccessItem helper function
+void FindandMove(DList<int> &list, int item){
+  //Pre Conditions: 
+  //Post Conditions: if item is in list, moves it to the head
+  if (list.inList(item)){
+    list.deleteItem(item);
+    list.insertHead(item);
+    cout << "Item found and successfully moved!" << endl;
+  } 
+}
+
+
+//D : Delete // deletes item based on user console input
+void Delete(DList<int> &list){
+  if (list.lengthIs() > 0){ 
+    int input;
+    cout << "What number would you like to delete?" << endl;
+    cin >> input;
+  
+    if (list.inList(input)){
+      list.deleteItem(input);
+      cout << "Item found and successfully removed!" << endl;
+    } 
+    else cout << "That item is not in the list." << endl;
+    
+  } 
+  else cout << "The list is empty." << endl;
+  
+}
+
+
+//P : PrintList // Prints content of the list one line per item
+void PrintList(const DList<int> &list){
+  if (list.lengthIs() > 0){
+    cout << "Printing list..." << endl;
+    list.print();
+    cout << "End of List" << endl;
+  } 
+  else cout << "The list is empty." << endl;
+}
+
+
+//L : PrintLength // Prints length of the list
+void PrintLength(const DList<int> &list){
+  cout << "The length of the list is " << list.lengthIs() << endl;  
+}
+
+//EXTRAS WW
+//R : ReverseList // Reverses the contents of the list
+void ReverseList(DList<int> &list){
+    if (list.lengthIs() <= 1) {
+        cout << "Too short to reverse!" << endl;
+    } else {
+    
+      //Pre Reverse    
+      cout << "Current list" << endl;
+      PrintList(list);
+     
+      
+      //Reverse works by using FindandMoveSilent to move the tail to the front,
+      //the number of times of the length of the list -1
+      NodeType<int>* currentNode = list.getHead();
+      NodeType<int>* tempNode = currentNode -> next;
+       
+      for (int i = 0; i < list.lengthIs()-1; i++){
+      NodeType<int>* tempNode = currentNode -> next;
+     
+      FindandMoveSilent(list, tempNode -> info);
+      }
+      
+
+      //Post Reverse
+      cout << endl << "List reversed!" << endl;
+      PrintList(list);
+    }
+}
+
+//FindandMoveSilent//Reverse helper function
+void FindandMoveSilent(DList<int> &list, int item){
+  //Pre Conditions: 
+  //Post Conditions: if item is in list, moves it to the head
+  if (list.inList(item)){
+    list.deleteItem(item);
+    list.insertHead(item);
+  } 
+}
+
+//F : FrontofList() // Prints head of list
+void FrontofList(const DList<int> &list){
+  if (list.lengthIs() > 0){
+    cout << "The head is " << list.getHead() -> info << endl;
+  } 
+  else cout << "The list is empty." << endl;
+}
+
+//B : BackofList() // Prints tail of list
+void BackofList(const DList<int> &list){
+  if (list.lengthIs() > 0){
+    cout << "The tail is " << list.getTail() -> info << endl;
+  } 
+  else cout << "The list is empty." << endl;
+}]0;wilcox_we@cobra:~/Project1[wilcox_we@cobra Project1]$ cat dlist.h
+//Willem Wilcox, CSC 245, Dr. Digh, Mercer University, 9/21/23
+using namespace std;
+
+template <class ItemType>
+struct NodeType;
+
+template <class ItemType>
+class DList 
+{
+public :
+    DList ();		// Constructor
+    ~DList   ();  	// Destructor	
+
+    // Public Operations
+    void makeEmpty (); 
+    void deleteItem (ItemType item);
+    bool inList (ItemType item) const;	
+    bool isEmpty () const;  
+    void print() const; 
+    void insertHead (ItemType item); 
+    void appendTail (ItemType item); 
+    int lengthIs() const;
+    //Extra WW
+    NodeType<ItemType>* getHead() const;
+    NodeType<ItemType>* getTail() const;
+
+private :
+    // Private Attributes of a DList Object 
+    NodeType<ItemType>* head;
+    int length;
+
+    // Functions Called Solely By Public Functions, Not The Client 
+    NodeType<ItemType>* location(ItemType item) const;
+    NodeType<ItemType>* last() const; 
+    void deleteLocation (NodeType<ItemType>* delPtr);
+};
+
+#include "dlist.cpp"
+
+]0;wilcox_we@cobra:~/Project1[wilcox_we@cobra Project1]$ cat dlist.cpp
+//Willem Wilcox, CSC 245, Dr. Digh, Mercer University, 9/21/23
+#include <cstddef> 
+#include <iostream>
+
+
+using namespace std;
+
+template<class ItemType>
+struct NodeType
+{
+	ItemType info;
+	NodeType<ItemType>*	next;
+	NodeType<ItemType>*	back;
+};
+
+
+
+// Class constructor
+template <class ItemType>		
+DList<ItemType>::DList()
+{
+    length = 0;
+    head = NULL;
+}
+
+
+// Class deconstructor
+template <class ItemType>
+DList<ItemType>::~DList   ()		
+{
+	// Post: List is empty; All items have been deallocated.
+  makeEmpty();
+}
+
+
+// makeEmpty //empties list
+template <class ItemType>
+void DList<ItemType>::makeEmpty()
+{
+    // Post: List is empty; all items have been deallocated.
+  
+ while (head != NULL){
+   deleteLocation(last());
+ }
+
+}
+
+
+// deleteItem //deletes item from parameter
+template <class ItemType>
+void DList<ItemType>::deleteItem (ItemType item)	
+{
+	//  Pre :  item to be deleted is passed in via parameter 
+        // Post :  item is deleted if it exists in list 
+
+  if (inList(item)){
+    deleteLocation(location(item));
+  }  
+
+}
+
+
+
+
+
+
+// inList // returns bool of if parameter is in list
+template <class ItemType>
+bool DList<ItemType>::inList (ItemType item) const
+{
+	//  Pre :  item to be located is passed in via parameter 
+        // Post :  function returns bool value if item is found 
+ bool isHere = false;
+ 
+ if (!isEmpty()){
+   NodeType<int>* currentNode = head;
+    
+   while (currentNode != NULL){ //check each node, stops at tail
+     if (currentNode -> info == item){
+      isHere = true;
+     }
+    currentNode = currentNode -> next;   
+   }
+ }
+   
+   return isHere;
+}
+
+
+
+
+
+
+// isEmpty // returns bool of empty status
+template <class ItemType>
+bool DList<ItemType>::isEmpty() const		
+{
+
+  return (head == NULL);
+	// Post : function returns true if list is empty, false otherwise
+	
+}
+
+
+
+
+
+
+// print // prints list contents
+template <class ItemType>
+void DList<ItemType>::print() const	
+{
+	// Pre  : List is not empty 
+	// Post : Items in List have been printed to screen
+ 
+  int iterator = 1;
+ 
+  if(!isEmpty()){
+    NodeType<int>* currentNode = head;
+   
+    while (currentNode != NULL) {
+      cout << iterator << ". " << currentNode -> info << endl;
+      currentNode = currentNode -> next;   
+      iterator++;
+   }
+  }
+  else cout << "The list is empty." << endl;
+   
+   
+}
+	
+
+ 
+ 
+ 
+ 
+ 
+// insertHead // inserts parameter as new head 
+template <class ItemType>
+void DList<ItemType>::insertHead(ItemType item)	
+{
+	//  Pre : item to be inserted is passed in via parameter
+        // Post : item is inserted at head of list;  Former first node is 
+        //        linked back to this new one via double link;
+        //        Length incremented;  Special case handled if list is empty 
+        
+ NodeType<int>* newNode = new NodeType<int>;
+ newNode -> info = item;
+ newNode -> back = NULL;
+ 
+ if (head != NULL){
+   head -> back = newNode; //Link old 1st item to new 1st item
+   newNode -> next = head; //Link new 1st item to old 1st item 
+ } 
+ else {
+   newNode -> next = NULL; 
+ }
+   
+ head = newNode;
+ length++; //update length of list
+}
+
+
+
+
+
+
+
+// appendTail // inserts parameter to tail position
+template <class ItemType>
+void DList<ItemType>::appendTail(ItemType item)
+{
+	//  Pre :  item to be inserted is passed in via parameter
+        // Post :  item is added to tail of list; Former last node
+        //         is linked to this new one via double link   
+ 
+ 
+ NodeType<int>* newNode = new NodeType<int>;
+ newNode -> info = item;
+ newNode -> next = NULL;
+ 
+ if (!isEmpty()){
+  newNode -> back = last();
+  last() -> next = newNode;
+ } 
+ else {
+   newNode -> back = NULL;
+   head = newNode;
+ }
+ 
+ length++; //update length of list
+}
+
+
+
+
+
+
+
+// lengthIs // returns length of list
+template <class ItemType>
+int DList<ItemType>::lengthIs() const	
+{
+	// Post : Function returns current length of list  
+  return length;
+}
+
+
+// location // returns pointer for parameter
+template <class ItemType>
+NodeType<ItemType>* DList<ItemType>::location(ItemType item) const	
+{
+	//  Pre : item to be located is passed in via parameter 
+        // Post : function returns address of item being searched for --
+        //        if not found, NULL is returned 
+ 
+ if (!isEmpty()){
+   NodeType<int>* currentNode = head;
+   while (currentNode != NULL) {  
+     if (currentNode -> info == item){
+         return currentNode;    
+     } 
+     else currentNode = currentNode -> next;
+   } 
+ }
+ 
+ return NULL;	
+}
+
+
+// last // returns last item in list
+template <class ItemType>
+NodeType<ItemType>* DList<ItemType>::last() const	
+{
+	// Post : Function returns location of current last item in list
+  
+  //check if empty
+   if (!isEmpty()){
+     NodeType<ItemType>* currentNode = head;
+   
+     while (currentNode -> next != NULL){  
+      currentNode = currentNode -> next;   
+     }
+   
+   return currentNode;
+   }
+   return NULL;   
+}
+
+
+// deleteLocation // deletes paramter location
+template <class ItemType>
+void DList<ItemType>::deleteLocation (NodeType<ItemType>* delPtr)	
+{
+
+	//  Pre : Item to be deleted exits in list and its location
+        //        is passed in via parameter
+                   
+	// Post : Location passed in is removed from list;  Length
+        //        is decremented, and location is deallocated 
+
+        // Special Cases Handled for Deleting Only One Item in List,
+        // The Head Item of List, and the Tail Item of List
+  
+  NodeType<int>* spareNextNode = delPtr;
+  NodeType<int>* spareBackNode = delPtr;
+
+
+  if (!isEmpty()){
+    //If delPtr is head and not only item
+    if ((delPtr == head)){
+       if (delPtr -> next != NULL){
+        head = delPtr -> next;
+        head -> back = NULL;
+        }
+        else head = NULL;
+    }
+  
+    //if delPtr is tail
+    else if (delPtr -> next == NULL){
+      spareBackNode = spareBackNode -> back;
+      spareBackNode -> next = NULL;
+ 
+      //if delPtr is neither head/tail
+    }else {
+      //stich delPtr's back & next ptrs
+      spareNextNode = delPtr -> next;
+      spareBackNode = delPtr -> back;
+    
+      spareNextNode -> back = spareBackNode;
+      spareBackNode -> next = spareNextNode;
+    }
+    delete delPtr;
+    delPtr = NULL;
+    length--;
+  } 
+  
+  //Be sure to deallocate or it will point to null and lead to seg fault
+  //Special cases
+    //Deleting head,new heads back must be null
+    //Deleting tail, new tail next must be null
+    //Deleting only item in list
+}
+
+//EXTRAS WW
+// getHead // returns head item in list
+template <class ItemType>
+NodeType<ItemType>* DList<ItemType>::getHead() const	
+{
+	// Post : Function returns location of current head item in list
+  
+   if (!isEmpty()){
+     NodeType<ItemType>* currentNode = head;
+  
+   return currentNode;
+   }
+   return NULL;   
+}
+
+// getTail // returns last item in list // essentially just a public version of last()
+template <class ItemType>
+NodeType<ItemType>* DList<ItemType>::getTail() const	
+{
+	// Post : Function returns location of current tail item in list
+  
+   if (!isEmpty()){
+     NodeType<ItemType>* currentNode = head;
+   
+     while (currentNode -> next != NULL){  
+      currentNode = currentNode -> next;   
+     }
+   
+   return currentNode;
+   }
+   return NULL; 
+}
+
+]0;wilcox_we@cobra:~/Project1[wilcox_we@cobra Project1]$ c++ MoveFrpmn[K[K[Kont.cpp
+]0;wilcox_we@cobra:~/Project1[wilcox_we@cobra Project1]$ ./a.out
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h1
+What number would you like to insert?
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h2
+What number would you like to insert?
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h3
+What number would you like to insert?
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h4
+What number would you like to insert?
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h
+What number would you like to insert?
+6
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 6
+2. 4
+3. 3
+4. 2
+5. 1
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+r
+Current list
+Printing list...
+1. 6
+2. 4
+3. 3
+4. 2
+5. 1
+End of List
+
+List reversed!
+Printing list...
+1. 1
+2. 2
+3. 3
+4. 4
+5. 6
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+6
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+88
+That item is not in the list.
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+s
+	Error. Try Again.
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+l
+The length of the list is 4
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 1
+2. 2
+3. 3
+4. 4
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+a
+What number would you like to access?
+1
+Item found and successfully moved!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+a
+What number would you like to access?
+2
+Item found and successfully moved!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 2
+2. 1
+3. 3
+4. 4
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+r
+Current list
+Printing list...
+1. 2
+2. 1
+3. 3
+4. 4
+End of List
+
+List reversed!
+Printing list...
+1. 4
+2. 3
+3. 1
+4. 2
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+a
+What number would you like to access?
+1
+Item found and successfully moved!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 1
+2. 4
+3. 3
+4. 2
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+1
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+2
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+3
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+4
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+The list is empty.
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+t
+What number would you like to insert?
+3
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+t
+What number would you like to insert?
+2
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 3
+2. 2
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+r
+Current list
+Printing list...
+1. 3
+2. 2
+End of List
+
+List reversed!
+Printing list...
+1. 2
+2. 3
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+d
+What number would you like to delete?
+2
+Item found and successfully removed!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+p
+Printing list...
+1. 3
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+r
+Too short to reverse!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+f
+The head is 3
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+b
+The tail is 3
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+h
+What number would you like to insert?
+77
+Done!
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+f
+The head is 77
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+b
+The tail is 3
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+r
+Current list
+Printing list...
+1. 77
+2. 3
+End of List
+
+List reversed!
+Printing list...
+1. 3
+2. 77
+End of List
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+f
+The head is 3
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+b
+The tail is 77
+
+
+
+       ; % 
+        # 
+         {      
+        * $   <->
+       > &   <--->
+        _   <----->
+       | | <------->
+       | |<--------->
+       | |----------->
+       |_|------------>
+       <--------------->
+      <-----_______----->
+     <-----*  Hi!  *----->
+    <------*       *------>
+   <-------*(v._.^)*------->
+  <--------*_______*-------->
+ <--------------------------->
+<----------------------------->
+|-----------------------------|
+|           ~Menu~            |
+| H: Insert item at front     |
+| T: Insert item at back      |
+| A: Access an item in list   |
+| D: Delete an item in list   |
+| P: Print the list           |
+| F: Print front of the list  |
+| B: Print back of the list   |
+| L: Print the list's length  |
+| R: Reverse the list         |
+| Q: Quit the program         |
+|                             |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|     back <- info -> next    |
+|-v-v-v-v-v-v-v-^-^-^-^-^-^-^-|
+|                             |
+|   The Doubly Linked House:  |
+|     Home of the (linear)    |
+|      Doubly Linked List     |
+|                             |   %--------% v..^      / 
+|  Please enter your choice:  |   |Welcome!| /_/\_____/
+|       (and have fun!)       |   %--------%    /\   /\
+|-----------------------------|___|________|__ /  \ /  \
+
+q
+	Exiting Program...
+]0;wilcox_we@cobra:~/Project1[wilcox_we@cobra Project1]$ exit
+exit
+
+Script done on Thu 21 Sep 2023 12:32:57 AM EDT

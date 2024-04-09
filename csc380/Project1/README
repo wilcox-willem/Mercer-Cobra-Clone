@@ -1,0 +1,28 @@
+WILLEM WILCOX, DR. DIGH, MERCER, CSC380, PROG 1
+
+VERY BRIEF summary of my algorithm:
+  1) check nim sum (NS) of board (cummulative XOR of each pile),
+     if 0, record current board state and set of possible board states leading to it
+     if not 0, see if any possible move is a recorded state or state with NS = 0
+     
+  2) if no move made, try any legal move max->min removal of chips from 1st-last pile
+      (In this case, the order: A3,A2,A1,B3,...,C1)
+
+
+LONGER WINDED EXPLANATION/OVERVIEW
+
+I designed the game so that whenever it is the machines turn to play, the first thing it
+tries is a "educated move" where the real fun starts. The educated move portion is when
+the computer first checks the nim sum of the game, if it is in an unsafe position it will 
+record it for future. Otherwise, it will check the list of recorded moves to see if any
+possible move can be made so that board state for the opponent is unsafe. If it is unable 
+to find a legal move to create a previous state, it exits the "educated move" portion and 
+moves on to first try searching for any possible move to leave the board with a NS=0 for 
+the opponent. Finally, if no move is found, it will try all possible moves until one is 
+found. 
+
+Additionally, to train my program:
+  - I added a hidden mode to allow it to play Machine vs Random Moves (w/ rand piles)
+  - I extended the max allowable pile size to 1000
+  - I wrote a small script to run it over n over (1000x)
+      - it can be run by using "./trainer"

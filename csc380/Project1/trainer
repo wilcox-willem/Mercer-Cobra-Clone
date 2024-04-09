@@ -1,0 +1,61 @@
+#!/bin/bash
+
+GREEN=`\033[0;32m`
+RESET=`\033[0m`
+
+print_color() {
+  local color="$1"
+  local text="$2"
+  echo -e "${color}${text}${RESET}"
+}
+
+for ((i=1; i < 10000; i++))
+do
+  python3 NIMww.py 1
+  moves_saved=$(cat unsafe | wc -l) 
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  print_color $GREEN $moves_saved
+  sleep .5
+  clear
+done
+

@@ -1,0 +1,96 @@
+// Wilcox Willem, 3/16/24
+// csc380 Dr. Digh MU
+
+
+// II. a)
+| ?- sumlist([1,2,3,4],N).
+
+N = 10
+
+yes
+| ?- reverse([1,2,3,4],N).
+
+N = [4,3,2,1]
+
+yes
+| ?- 
+
+
+// II. b)
+[wilcox_we@cobra Lab7]$ gprolog
+GNU Prolog 1.4.4 (64 bits)
+Compiled Jan 15 2014, 20:38:19 with gcc
+By Daniel Diaz
+Copyright (C) 1999-2013 Daniel Diaz
+| ?- [cabbage].
+compiling /home/wilcox_we/csc380/Labs/Lab7/cabbage.pl for byte code...
+/home/wilcox_we/csc380/Labs/Lab7/cabbage.pl:11: warning: singleton variables [Rest] for valat/3
+/home/wilcox_we/csc380/Labs/Lab7/cabbage.pl:12: warning: singleton variables [First] for valat/3
+/home/wilcox_we/csc380/Labs/Lab7/cabbage.pl compiled, 91 lines read - 9471 bytes written, 9 ms
+
+(2 ms) yes
+| ?- go(state(w,w,w,w),state(e,e,e,e)).
+try farmer takes goat:  e w e w 
+try farmer takes goat:  w w w w 
+try farmer takes self:  w w e w 
+try farmer takes wolf:  e e e w 
+try farmer takes wolf:  w w e w 
+try farmer takes goat:  w e w w 
+try farmer takes goat:  e e e w 
+try farmer takes cabbage:  e e w e 
+try farmer takes wolf:  w w w e 
+try farmer takes wolf:  e e w e 
+try farmer takes goat:  e w e e 
+try farmer takes goat:  w w w e 
+try farmer takes cabbage:  w w e w 
+backtrack from: e w e e 
+backtrack from: w w w e 
+try farmer takes cabbage:  w e w w 
+try farmer takes self:  w e w e 
+try farmer takes goat:  e e e e 
+Solution path is:
+
+// state(F,W,G,C)
+// Farmer
+// Wolf
+// Goat
+// Cabbage
+//
+// Statuses:: w(est), e(ast)
+
+state(w,w,w,w)
+// All on west bank 
+
+state(e,w,e,w)
+// Farmer takes goat to east
+
+state(w,w,e,w)
+// Farmer returns to west
+
+state(e,e,e,w)
+// Farmer takes wolf east
+
+state(w,e,w,w)
+// Farmer returns west with goat
+
+state(e,e,w,e)
+// Farmer returns east with cabbage
+
+state(w,e,w,e)
+// Farmer returns west alone
+
+state(e,e,e,e)
+// Farmer returns east with goat, completing journey
+
+
+
+
+true ? 
+
+// II c)
+Essentially, backtracking is a way of taking steps back when a deadend or failed solution is found. This makes it easier to try every combination without completely restarting, and explores states in a localized/regional fashion
+
+// II d)
+Similar to the previous problem, there is a river that can only be crossed with one passenger at a time, and the passengers are different sets of couples. The women can only be left with men if their husband is present. This makes it so there can't be more women than men if there are both men and women on the same side.
+
+

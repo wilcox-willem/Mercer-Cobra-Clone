@@ -1,0 +1,137 @@
+hello|hi|whats up|hey
+Hi! what can I help you with today
+Hello, how can I help you? 
+Hey, what would you like to talk about today?
+Good to hear from you. How are you?
+#
+always
+Can you think of a specific example?
+Can you give an example?
+Why do you think that?
+#
+because
+Is that the real reason?
+Can you explain any further?
+Is there any other reason? 
+#
+sorry
+Please, don't apologize. 
+# 
+maybe 
+You don't seem very certain.
+Is there a reason you aren't certain?
+#
+i think
+Do you really think so?
+Why do you think that? 
+#
+you|are you|and yourself?
+We are here to discuss you, not me.
+I would rather we discussed something else.
+I think it would be better to stay on the subject of you.
+#
+yes|yes i'm|yes i am
+Why do you think so? 
+You seem quite positive. Are you?
+#
+no|no i'm|no i am|not really|im not sure
+Why not? 
+Are you sure?
+
+#
+i am|i'm
+Do you wish to be *?
+How long have you been *?
+Do you believe it's normal to be *?
+Do you enjoy being *?
+#
+i feel
+Tell me more about such feelings. 
+Do you often feel *?
+Do you enjoy feeling *?
+Why do you feel that way? 
+#
+family |mother |mom |dad |father |sister |brother |husband |wife 
+Tell me more about your family. 
+How do you get along with your family? 
+Is your family important to you?  
+#
+dream|nightmare
+What does that dream suggest to you? 
+Do you dream often? 
+What persons appear in your dreams? 
+Are you disturbed by your dreams? 
+#
+__NO_MATCH__
+What does that suggest to you? 
+I see. 
+I'm not sure I understand you fully. 
+Can you elaborate? 
+That is quite interesting.
+Can you think of a way to rephrase that? 
+#
+how are you?|how are you doing?|how do you feel?
+I am fine, thank you for asking.
+#
+i want|i really want  
+Why do you want *?
+How long have you wanted *?
+#
+i need|i really need 
+Why do you say that?
+Do you really need *?
+Are you sure you need *?
+#
+while |forever |long time |too long 
+Do you think that will change?
+Do you see anything changing soon?
+#
+okay|ok|alright|hopefully
+What's on your mind?
+Do you have anything else to say?
+How are you feeling?
+#
+hate
+As they say, hate is bad for your heart.
+As Dr. Bob Allen says, "Hate is bad for your heart".
+#
+why?|why |who 
+I am not sure I can answer that for you.
+Try asking yourself instead.
+Try looking for an answer within yourself.
+#
+childhood|growing up|as kid
+Can you think of any impactful moments in your childhood?
+Do you think your past has the answers you are looking for?
+#
+thank you|i appreciate
+Of course, what else is on your mind?
+Is there anything else you want to discuss?
+#
+im not sure|i'm not sure|i don't know|i'm unsure|i do not know
+We can move on to something else if you would like.
+Do you need more time to think about it?
+Would you like to disuss something else?
+#
+i like|i love|i enjoy|i love to
+What speaks to you about *?
+Do you think your feelings about * are appropriate?
+Should you care for *?
+#
+i fear|fears|i am scared of|i am afraid of
+Where do you think the unease stems from?
+How long have you been afraid of *?
+#
+i should |i would |i could
+Do you think doing that would end well?
+Do you think doing that would end poorly?
+Have you ever done that before?
+#
+once i |couple times i 
+Would you do it again?
+Did it end how you predicted?
+#
+you are |you're |youre 
+Why do you think I am *?
+Why do you say I am *?
+#

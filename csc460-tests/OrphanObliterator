@@ -1,0 +1,25 @@
+#!/bin/bash
+
+proc="a.out"
+
+if [ $# -eq 0 ];
+then 
+    proc=$1
+fi
+
+runaways=`ps -ef | grep wilcox_+ | grep "$proc" | cut -d" " -f2`
+
+
+
+cat -e "pre culling"
+ps -ef | grep wilcox | grep "$proc"
+
+for x in $runaways
+do
+    kill $x
+done
+
+cat -e "post culling"
+ps -ef | grep wilcox | grep "$proc"
+
+cat -e "done"

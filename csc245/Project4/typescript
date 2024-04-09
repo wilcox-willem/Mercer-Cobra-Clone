@@ -1,0 +1,96 @@
+Script started on Wed 13 Dec 2023 10:57:55 PM EST
+]0;wilcox_we@cobra:~/csc245/Project4[?1034h[wilcox_we@cobra Project4]$ exitRELEASE ginfile1.da t 2[C[C[C[C[C1[C[C[C[C[Cls[Kmv a.out RELEASEls[Kc++ dijkstra.cpp [6Pa.out 10 12c++ dijkstra.cpp 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ c++ dijkstra.cpp exit[KRELEASE ginfile1.da t 2[C[C[C[C[C1[C[C[C[C[Cls[Kmv a.out RELEASEls[Kc++ dijkstra.cpp ls[Kmv a.out RELEASE
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ ls
+dijkstra.cpp    ginfile2.dat  ginfile5.dat  HashTable.cpp   LinkedList.h  [0m[01;32mRELEASE[0m
+dsexceptions.h  ginfile3.dat  graph.cpp     HashTable.h     queue.cpp     [01;32mSAMPLE[0m
+ginfile1.dat    ginfile4.dat  graph.h       LinkedList.cpp  queue.h       typescript
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ lsmv a.out RELEASEc++ dijkstra.cpp exit[KRELEASE ginfile1.da t 2[C[C[C[C[C1[C[C[C[C[C
+
+
+
+~~~~~~~~~~~~~~~~~~ DIJKSTRA'S ALGORITHM ~~~~~~~~~~~~~~~~~~
+
+A Weighted Graph Has Been Built For These 8 Vectors:
+
+        Austin        Dallas    Washington
+       Atlanta       Houston        Denver
+       Chicago              
+
+ Please input your starting newVertex: Atlanta
+---------------------------------------------------------
+        Vertex          Distance         Previous
+
+       Atlanta                 0             N/A
+    Washington               600         Atlanta
+       Houston               800         Atlanta
+        Dallas              1900      Washington
+        Austin              2100          Dallas
+        Denver              2680          Dallas
+       Chicago              2800          Dallas
+                     Not On Path             N/A
+
+---------------------------------------------------------
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ RELEASE ginfile1.dat [1P[1@2
+
+
+
+~~~~~~~~~~~~~~~~~~ DIJKSTRA'S ALGORITHM ~~~~~~~~~~~~~~~~~~
+
+A Weighted Graph Has Been Built For These 8 Vectors:
+
+            V1            V2            V5
+            V4            V3            V6
+            V7              
+
+ Please input your starting newVertex: V1
+---------------------------------------------------------
+        Vertex          Distance         Previous
+
+            V1                 0             N/A
+            V4                 1              V1
+            V2                 2              V1
+            V5                 3              V4
+            V3                 3              V4
+            V7                 5              V4
+            V6                 6              V7
+                     Not On Path             N/A
+
+---------------------------------------------------------
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ 
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ RELEASE ginfile2.dat 1[C[C[C[C[C
+
+
+
+~~~~~~~~~~~~~~~~~~ DIJKSTRA'S ALGORITHM ~~~~~~~~~~~~~~~~~~
+
+A Weighted Graph Has Been Built For These 8 Vectors:
+
+        Austin        Dallas    Washington
+       Atlanta       Houston        Denver
+       Chicago              
+
+ Please input your starting newVertex: San Franciscoi
+ Starting currItem does not exist...
+ Please input your new newVertex: Denver
+---------------------------------------------------------
+        Vertex          Distance         Previous
+
+        Denver                 0             N/A
+       Chicago              1000          Denver
+       Atlanta              1400          Denver
+    Washington              2000         Atlanta
+       Houston              2200         Atlanta
+        Dallas              3300      Washington
+        Austin              3500          Dallas
+                     Not On Path             N/A
+
+---------------------------------------------------------
+]0;wilcox_we@cobra:~/csc245/Project4[wilcox_we@cobra Project4]$ exit
+exit
+
+Script done on Wed 13 Dec 2023 10:59:12 PM EST

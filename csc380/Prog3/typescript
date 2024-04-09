@@ -1,0 +1,389 @@
+Script started on Sun 07 Apr 2024 08:58:01 PM EDT
+]0;wilcox_we@cobra:~/csc380/Prog3[?1034h[wilcox_we@cobra Prog3]$ Hey Dr. Digh, Hope you are doing well!
+bash: Hey: command not found...
+]0;wilcox_we@cobra:~/csc380/Prog3[wilcox_we@cobra Prog3]$ cat elizaWW.py 
+# Willem Wilcox, Dr. Digh, CSC 380, MU, 4/1/24
+# note: the readme contains descriptions of what methods and steps i took
+#       but I still added comments along the way to explain what i am trying to do 
+
+import sys,os,random,copy,time
+
+def clean_input(user_input):
+    # in, user_input
+    # out, user_input, lowercase and noise reduced
+    
+    # noise set
+    words_noise = set(["this", "that", "take", "which", "then", "than",
+        "will", "with", "have", "after", "such", "when", "some", 
+        "them", "could", "make", "through","from", "were", "also", 
+        "into", "they", "their", "there", "my", "her", "his", "a", "the"])
+
+    cleaned_text = user_input
+    cleaned_text = cleaned_text.lower()
+    cleaned_text = cleaned_text.split()
+
+    # remove noise and rejoin text
+    cleaned_text = ([word for word in cleaned_text if word not in words_noise])
+    cleaned_text = ' '.join(cleaned_text)
+
+    return cleaned_text
+
+
+def load_dialogue(file_path):
+    #  in, file_path of dialogue file
+    # out, dictionary where keys are user input 
+    #      that lead to all responses per key
+    #
+    #      note: this is a little wasteful memory wise,
+    #            but i found that sorting the dict by key size L-S
+    #            increased response accuracy as i added more and more stuff
+
+    dialogue = {}
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        current_key = None
+        for line in lines:
+            line = line.strip()
+            if line.startswith('#') or line == '':
+                current_key = None
+            else:
+                if current_key is None:
+                    # split the line by "|" to handle multiple user inputs
+                    keys = line.split("|")
+                    for key in keys:
+                        dialogue[key] = []
+                    current_key = keys
+                else:
+                    # associate the same set of responses with all keys
+                    for key in current_key:
+                        dialogue[key].append(line)
+    
+    # sort the dialogue dict by key length, Longest to Shortest
+    dialogue = dict(sorted(dialogue.items(), key=lambda x: len(x[0]), reverse=True)) 
+
+    return dialogue
+
+def load_facts(file_path):
+    #  in, file_path of facts file
+    # out, list of random facts
+
+    facts = []
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            facts.append(line)
+
+    return facts
+
+
+def get_response(user_input, dialogue):
+    #  in, user_input
+    # out, prints response from Eliza
+    #
+    # note: to speed up this it first checks if user input is a key,
+    #       if not it then checks if any keys are within the user input,
+    #       if found, it then pulls a random response and modifies if needed,
+    #       otherwise it then pulls a random response from "__NO_MATCH__".
+    #       finally, as soon as it finds an appropriate response it prints then returns
+    user_input = clean_input(user_input)
+
+    if user_input in dialogue:
+        responses = dialogue[user_input]
+        response = random.choice(responses)
+
+        print("Eliza:", response)
+        return
+
+    else:
+        for key in dialogue:
+            if key in user_input:
+                responses = dialogue[key]
+                response = random.choice(responses)
+
+                if "*" in response:
+                    response = response.split("*")
+                    response_snippet = user_input.split(key)
+
+                    if response_snippet[1][0] == " ":
+                        response_snippet[1] = response_snippet[1][1:]
+
+                    print("Eliza: %s%s%s" % (response[0], response_snippet[1], response[1]))
+                    return
+                else:
+                    print("Eliza:", response)
+                    return
+
+    responses = dialogue['__NO_MATCH__']
+    response = random.choice(responses)
+    print("Eliza:", response)
+    return
+            
+
+
+############################################
+#                    _          __ __      #
+#  _ __ ___    __ _ (_) _ __   / / \ \  _  #
+# | '_ ` _ \  / _` || || '_ \ | |   | |(_) #
+# | | | | | || (_| || || | | || |   | | _  #
+# |_| |_| |_| \__,_||_||_| |_|| |   | |(_) #
+#                              \_\ /_/     #
+############################################
+    # ^ it stands out better for me ^ #
+def main():
+
+    do_sleep = True
+
+    # command arg disables Eliza Sleep
+    if len(sys.argv) > 1:
+        do_sleep = False
+    
+        
+
+    # parse dialogue dict from file
+    dialogue = load_dialogue("dialogue.txt")
+
+    # parse fact dict from file
+    facts = load_facts("Facts.txt")
+        
+    # greet user
+    print("Hello, my name is Eliza")
+
+    # to control rate of random facts
+    fact_timer = random.randint(1,5)
+
+
+    # response/dialogue loop of program
+    while (True):
+        # get user input and clean it
+        print(" ", end="~ ")
+        user_input = input()
+        user_input = clean_input(user_input)
+        print("  ")
+        
+    
+        if ("bye" or "bye.") in user_input:
+            sys.exit()
+        else:
+            # "thinking" step, to make user think Eliza is thinking
+            #  making responses feel  more authentic.
+            #  Disable by using any command arg after
+            if do_sleep:
+                time.sleep(random.randint(1,5))
+
+            fact_timer -= 1
+
+            if fact_timer < 1:
+                print("Eliza: This is a little off topic, but do you know what I just thought about? The fact that")
+                print(random.choice(facts))
+                print("\nEliza: What do you think about that?")
+                fact_timer = random.randint(6,10)
+            else:        
+                get_response(user_input, dialogue)
+        
+        
+    
+# execute main()
+if __name__ ==  "__main__":
+    main()]0;wilcox_we@cobra:~/csc380/Prog3[wilcox_we@cobra Prog3]$ cat elizaWW.py Hey Dr. Digh, Hope you are doing well![C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[20Ppython3 elizaWW.pyls[Kcd Prog3ls[K[K[Kcd csc380/ls[Kpython3 elizaWW.py
+Hello, my name is Eliza
+ ~ hello I am will
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+The first web search engine, Archie, was created in 1990.
+
+Eliza: What do you think about that?
+ ~ tagt    I think thay ts really cool
+  
+Eliza: Do you really think so?
+ ~ yes
+  
+Eliza: Why do you think so?
+ ~ because I thoughtgoogle was the first s big search engine
+  
+Eliza: Is that the real reason?
+ ~ I think so
+  
+Eliza: Why do you think that?
+ ~ I am not sure
+  
+Eliza: Do you enjoy being not sure?
+ ~ not really
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+1,800 cigarettes are smoked per person each year in China.
+
+Eliza: What do you think about that?
+ ~ that's a lot of cigarettes, ww ow
+  
+Eliza: I'm not sure I understand you fully.
+ ~ Well, each person does not smoke 1,800 so that means there are some people that may smoke more than that. Plus that is a lot
+  
+Eliza: Why not?
+ ~ what do you mean?
+  
+Eliza: We are here to discuss you, not me.
+ ~ sorry
+  
+Eliza: Please, don't apologize.
+ ~ okay
+  
+Eliza: What's on your mind?
+ ~ I am really tired
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+Half of all bank robberies take place on a Friday.
+
+Eliza: What do you think about that?
+ ~ I am still tired
+  
+Eliza: Do you enjoy being still tired?
+ ~ not necessarily
+  
+Eliza: Are you sure?
+ ~ yes
+  
+Eliza: You seem quite positive. Are you?
+ ~ I am positive
+  
+Eliza: How long have you been positive?
+ ~ at  while
+  
+Eliza: Hey, what would you like to talk about today?
+ ~ bye
+  
+]0;wilcox_we@cobra:~/csc380/Prog3[wilcox_we@cobra Prog3]$ python3 elizaWW.py
+Hello, my name is Eliza
+ ~ hello I am will
+  
+Eliza: Hey, what would you like to talk about today?
+ ~ I am not sure
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+Common Cobra venom is not on the list of top 10 venoms yet it is still 40 times more toxic than cyanide.
+
+Eliza: What do you think about that?
+ ~ that      i fear snakes
+  
+Eliza: Where do you think the unease stems from?
+ ~ My sister had a cat that dies d to a snake
+  
+Eliza: Is your family important to you?
+ ~ I think they are
+  
+Eliza: Do you really think so?
+ ~ yes, I do
+  
+Eliza: Why do you think so?
+ ~ Because they are impo    some of the closest people to me and I trust them with my life
+  
+Eliza: Can you explain any further?
+ ~ it is j hard for me to
+  
+Eliza: That is quite interesting.
+ ~ okay
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+A chameleon's tongue is twice the length of its body.
+
+Eliza: What do you think about that?
+ ~ That is strange
+  
+Eliza: Can you elaborate?
+ ~ Imagine if a human had a tongue that long. I don;t    't know what we would use it for
+  
+Eliza: Would you like to disuss something else?
+ ~ you
+  
+Eliza: I would rather we discussed something else.
+ ~ You are secretive
+  
+Eliza: Why do you think I am secretive?
+ ~ because you won;t    't tell me any thing about yourself
+  
+Eliza: Is that the real reason?
+ ~ I think it is
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+The Bible, the world's best-selling book, is also the world's most shoplifted book.
+
+Eliza: What do you think about that?
+ ~ That is very interesting, thank you for telling me
+  
+Eliza: Is there anything else you want to discuss?
+ ~ my fell  elings
+  
+Eliza: Can you think of a way to rephrase that?
+ ~ I have    feel sad  
+  
+Eliza: Do you enjoy feeling sad?
+ ~ no I do not
+  
+Eliza: Why not?
+ ~ because I am empty when I feel sad
+  
+Eliza: Can you explain any further?
+ ~ I don't think I can
+  
+Eliza: Hey, what would you like to talk about today?
+ ~ I'm not sure
+  
+Eliza: Do you need more time to think about it?
+ ~ yes I do
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+There is actually no danger in swimming right after you eat, though it may feel uncomfortable.
+
+Eliza: What do you think about that?
+ ~ Very cool, goodbye
+  
+]0;wilcox_we@cobra:~/csc380/Prog3[wilcox_we@cobra Prog3]$ python3 elizaWW.py
+Hello, my name is Eliza
+ ~ you are mean
+  
+Eliza: Why do you say I am mean?
+ ~ because you said hello and not hi
+  
+Eliza: Can you explain any further?
+ ~ I gi    not resll   ally ELiza    liza
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+25% of a human’s bones are in its feet.
+
+Eliza: What do you think about that?
+ ~ It makes me wonder how I habe==    ve not broken a foot before
+  
+Eliza: Why not?
+ ~ because I have been carefuke,   l, I guess
+  
+Eliza: Is there any other reason?
+ ~ maybe my bones are strong
+  
+Eliza: Is there a reason you aren't certain?
+ ~ It is hard to know for sure
+  
+Eliza: Why not?
+ ~ I don't know
+  
+Eliza: Do you need more time to think about it?
+ ~ no
+  
+Eliza: Are you sure?
+ ~ yes
+  
+Eliza: Why do you think so?
+ ~ I am ready to talk more
+  
+Eliza: This is a little off topic, but do you know what I just thought about? The fact that
+In the U.S, Frisbees outsell footballs, baseballs and basketballs combined.
+
+Eliza: What do you think about that?
+ ~ it males     kes sense, frisbees are cheap
+  
+Eliza: I see.
+ ~ goodbye, I will talk to you later
+  
+]0;wilcox_we@cobra:~/csc380/Prog3[wilcox_we@cobra Prog3]$ exit
+exit
+
+Script done on Sun 07 Apr 2024 09:12:17 PM EDT
